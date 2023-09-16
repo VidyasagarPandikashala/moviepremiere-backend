@@ -1,55 +1,37 @@
 package com.moviepremierebackend.service;
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moviepremierebackend.dto.MovieRetrieveDto;
 import com.moviepremierebackend.dto.MovieSectionDto;
 import com.moviepremierebackend.dto.MovieSectionFetcher;
-
 import com.moviepremierebackend.dto.SearchDto;
 import com.moviepremierebackend.factory.MovieSectionFactory;
 import com.moviepremierebackend.model.Movie;
-import com.moviepremierebackend.model.Ott;
-import com.moviepremierebackend.model.Rating;
 import com.moviepremierebackend.repository.MovieRepository;
-import com.moviepremierebackend.repository.OttRepository;
-import com.moviepremierebackend.repository.RatingRepository;
 import com.moviepremierebackend.utilityFunctions.ArrayListUtitlity;
 import com.moviepremierebackend.utilityFunctions.MovieApiBuilderFactory;
 import com.moviepremierebackend.utilityFunctions.MovieRetrieveIUf;
 import com.moviepremierebackend.utilityFunctions.PaginationUtils;
-import com.moviepremierebackend.utilityFunctions.UtilityFunction;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-
-@Service("MovieService")
+@Service
 public class MovieServiceImpl implements MovieService {
 
 	private final MovieRepository movieRepository;
 
 	private final OttService ottService;
 
-	private final RatingRepository ratingRepository;
-
 	private final MovieRetrieveIUf retrievedData;
 
 	private final MovieSectionFactory sectionFetcherFactory;
 
 	public MovieServiceImpl(MovieRepository movieRepository, OttService ottService, MovieRetrieveIUf retrievedData,
-			MovieSectionFactory sectionFetcherFactory, RatingRepository ratingRepository) {
+			MovieSectionFactory sectionFetcherFactory) {
 		this.movieRepository = movieRepository;
 		this.ottService = ottService;
 		this.retrievedData = retrievedData;
 		this.sectionFetcherFactory = sectionFetcherFactory;
-		this.ratingRepository = ratingRepository;
 
 	}
 
