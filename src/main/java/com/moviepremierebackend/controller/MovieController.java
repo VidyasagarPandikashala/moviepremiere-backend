@@ -16,74 +16,81 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.moviepremierebackend.dto.MovieAverageRating;
 import com.moviepremierebackend.dto.MovieRetrieveDto;
 import com.moviepremierebackend.dto.MovieSectionDto;
 import com.moviepremierebackend.dto.SearchDto;
 import com.moviepremierebackend.model.Movie;
 import com.moviepremierebackend.service.MovieService;
 import com.moviepremierebackend.service.MovieServiceImpl;
+import com.moviepremierebackend.service.RatingService;
 
 import lombok.RequiredArgsConstructor;
-
 
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/movie-premiere/v1/")
 @RestController
 public class MovieController {
-	
+
 	@Autowired
 	private MovieService movieService;
-	
+
+	@Autowired
+	private RatingService ratingService;
+
 	@PostMapping("/save")
 	public void saveMovieData(@RequestBody Movie movie) {
 		this.movieService.saveMovie(movie);
 	}
-	
+
 	@PostMapping
-	public void saveAllMovieData(@RequestBody ArrayList<Movie> movie) {
-		this.movieService.saveMovies(movie);
+	public void saveAllMovieData(@RequestBody ArrayList<Movie> movies) {
+		this.movieService.saveMovies(movies);
 	}
-	
-	
+
 	@GetMapping("/movie/search")
-	public ArrayList<SearchDto> getRequiredData(@RequestParam(name="id", defaultValue = "0")long movieId ,
-									   @RequestParam(name ="movieName", required = false) String movieName, 
-									   @RequestParam(value="sort", defaultValue = "ASC") String sort,
-									@RequestParam(name="size", defaultValue ="2") int size,
-									@RequestParam(name="page", defaultValue ="1") int page)
-	{
-	
+	public ArrayList<SearchDto> getRequiredData(@RequestParam(name = "id", defaultValue = "0") long movieId,
+			@RequestParam(name = "movieName", required = false) String movieName,
+			@RequestParam(value = "sort", defaultValue = "ASC") String sort,
+			@RequestParam(name = "size", defaultValue = "2") int size,
+			@RequestParam(name = "page", defaultValue = "1") int page) {
+
 		return this.movieService.fetchMovieListBySearchData(movieName, movieId, sort, size, page);
 	}
+
 	@GetMapping("/movie/get-all-movies")
-	public ArrayList<Movie> getAllMovies(){
-		
+	public ArrayList<Movie> getAllMovies() {
+
 		return this.movieService.fetchAllMovies();
-		
+
 	}
+
 	@GetMapping("/movie/byId/{id}")
-	public Movie getAllMovieId(@PathVariable("id") long movieId){
-		System.out.println(movieId);
-		
+	public Movie getAllMovieId(@PathVariable("id") long movieId) {
+
 		return this.movieService.fetchMovieById(movieId);
-		
+
 	}
-	
-	
+
 	@GetMapping("/movie/get-movies-by-section")
-	public ArrayList<MovieSectionDto> getMoviesForSection(@RequestParam(name="name", defaultValue= "null", required = false)String sectionName,
-			@RequestParam(name="sort", defaultValue= "null", required = false)String sort,
-			@RequestParam(name="size", defaultValue ="0")int size,
-			@RequestParam(name="page",defaultValue ="1")int page){
-		ArrayList<MovieSectionDto> searchResult = this.movieService.fetchMovieListBySection(sectionName, sort, size, page);
-		System.out.println(searchResult);
+	public ArrayList<MovieSectionDto> getMoviesForSection(
+			@RequestParam(name = "name", defaultValue = "null", required = false) String sectionName,
+			@RequestParam(name = "sort", defaultValue = "null", required = false) String sort,
+			@RequestParam(name = "size", defaultValue = "0") int size,
+			@RequestParam(name = "page", defaultValue = "1") int page) {
+
 		return this.movieService.fetchMovieListBySection(sectionName, sort, size, page);
-		
+
 	}
-	
+
 	@GetMapping("/delete-movie/{movieId}")
-	public void deleteMovie(@PathVariable("movieId")long movieId) {
+	public void deleteMovie(@PathVariable("movieId") long movieId) {
 		this.movieService.deleteMovie(movieId);
+	}
+
+	@GetMapping("/topRated")
+	public List<MovieAverageRating> retrieveTopRatedMovies() {
+		return this.ratingService.fetchTopRatedMovies();
 	}
 }

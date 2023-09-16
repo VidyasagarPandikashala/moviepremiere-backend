@@ -12,23 +12,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moviepremierebackend.model.AuthenticationResponse;
-import com.moviepremierebackend.model.Movie;
+
 import com.moviepremierebackend.model.User;
-import com.moviepremierebackend.service.MovieService;
+
 import com.moviepremierebackend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/movie-premiere/v1/")
+@RequestMapping("/movie-premiere/v1/user")
 @RestController
 public class UserController {
 	@Autowired
 	private UserService userService;
 
 	@PostMapping("/sign-up")
+
 	public String saveMovieData(@RequestBody User user) {
+
 		this.userService.saveUser(user);
 		return "User Data saved successfully";
 	}
@@ -39,10 +41,10 @@ public class UserController {
 		return this.userService.getAuthentication(user);
 	}
 
-	@PostMapping("/logout")
+	@PostMapping("/user/logout")
 	public void setLoggedInandLoggedOutStatus(@RequestParam(name = "id", required = true) int userId) {
-		System.out.println("Logging out . . . ");
+
 		this.userService.setLoggedInandLoggedOutStatus(userId, false);
-		System.out.println("Logged out . . . " +userId);
+
 	}
 }

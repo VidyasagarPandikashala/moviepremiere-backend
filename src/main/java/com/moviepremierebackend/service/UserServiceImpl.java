@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
 		userObject.setEmail(user.getEmail());
 		userObject.setUserName(user.getUserName());
 		userObject.setPassword(user.getPassword());
+		userObject.setLoggedIn(false);
 
 		this.userRepository.save(userObject);
 		return "Successfully saved user Data";
@@ -46,13 +47,12 @@ public class UserServiceImpl implements UserService {
 		if (authenticatedUser.isPresent()) {
 			int authenticatedUserId = authenticatedUser.get().getUserId();
 			String username = authenticatedUser.get().getUserName();
-			 String token = jwtUtil.generateToken(authenticatedUserId, username);
-		
-			
+			String token = jwtUtil.generateToken(authenticatedUserId, username);
+
 			authenticationResponse.setUserId(authenticatedUserId);
 			authenticationResponse.setAuthenticated(true);
 			authenticationResponse.setToken(token);
-			setLoggedInandLoggedOutStatus(authenticationResponse.getUserId(),authenticationResponse.isAuthenticated());
+			setLoggedInandLoggedOutStatus(authenticationResponse.getUserId(), authenticationResponse.isAuthenticated());
 			System.out.println("Authenticated user ID: " + authenticatedUserId);
 			return authenticationResponse;
 		} else {
@@ -62,19 +62,18 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
-	
-	
-	 public void setLoggedInandLoggedOutStatus(int userId, boolean isAuthorized) {
-		
-		 this.userRepository.updateLoggedInStatus(userId, isAuthorized);
-		 
-	 }
+
+	public void setLoggedInandLoggedOutStatus(int userId, boolean isAuthorized) {
+
+		this.userRepository.updateLoggedInStatus(userId, isAuthorized);
+
+	}
 
 	@Override
 	public User getUserById(int userId) {
-		 
+
 		return this.userRepository.findByUserId(userId);
-		
+
 	}
-	
+
 }

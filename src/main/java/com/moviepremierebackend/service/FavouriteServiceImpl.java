@@ -10,29 +10,34 @@ import com.moviepremierebackend.model.User;
 import com.moviepremierebackend.repository.FavouriteRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
-public class FavouriteServiceImpl implements FavourtieService {
+public class FavouriteServiceImpl implements FavouriteService {
 
 	private final FavouriteRepository favouriteRepo;
 	private final UserService userService;
 	private final MovieService movieService;
 
-    @Override
-    @Transactional
-    public void saveFavourites(int userId, long movieId) {
-        User user = userService.getUserById(userId);
-        Movie movie = movieService.fetchMovieById(movieId);
+	public FavouriteServiceImpl(FavouriteRepository favouriteRepo, UserService userService, MovieService movieService) {
+		this.favouriteRepo = favouriteRepo;
+		this.userService = userService;
+		this.movieService = movieService;
+	}
 
-        if (!favouriteRepo.existsByUserAndMovie(user, movie)) {
-            Favourite favourite = new Favourite();
-            favourite.setUser(user);
-            favourite.setMovie(movie);
-            favouriteRepo.save(favourite);
-        }
-    }
+	@Override
+	@Transactional
+	public void saveFavourites(int userId, long movieId) {
+		User user = userService.getUserById(userId);
+		Movie movie = movieService.fetchMovieById(movieId);
+
+		if (!favouriteRepo.existsByUserAndMovie(user, movie)) {
+			Favourite favourite = new Favourite();
+			favourite.setUser(user);
+			favourite.setMovie(movie);
+			favouriteRepo.save(favourite);
+		}
+	}
+
 	@Override
 	public void removeFavouritesWithParamater(int userId, long movieId) {
 		Favourite favourite = createFavouriteObjectFromParameter(userId, movieId);

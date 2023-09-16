@@ -18,17 +18,20 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -41,35 +44,41 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "movie", indexes = {
+		@Index(name = "index_movie_name", columnList = "movieName"),
+		@Index(name = "index_release_date", columnList = "releaseDate")
+})
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "movieId")
-@ToString(exclude = {"favourite", "rating"})
+@ToString(exclude = { "favourite", "rating" })
 public class Movie {
-	@Id	
+
+	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long movieId;
+
+	@Column
 	private String movieName;
 	@ElementCollection
-    @CollectionTable(name = "genre")
-    private List<String> genres;
+	@CollectionTable(name = "genre")
+	private List<String> genres;
 	private String movieDescription;
 	private String imageUrl;
 	@ElementCollection
-    @CollectionTable(name = "actors")
-    private List<String> actors;
+	@CollectionTable(name = "actors")
+	private List<String> actors;
 	private int year;
 	private LocalDate releaseDate;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Ott ott;
-	
-	
+
 	@OneToMany(mappedBy = "movie", fetch = FetchType.EAGER)
 	@JsonIgnore
-	private List <Favourite> favourite;
-	
+	private List<Favourite> favourite;
+
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JsonBackReference("ratingBackReference")
-	private List <Rating> rating;
+	@JsonIgnore
+	private List<Rating> rating;
 
 }

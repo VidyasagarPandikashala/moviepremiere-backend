@@ -12,11 +12,9 @@ import lombok.Data;
 //@Embeddable
 @Data
 public class RatingId implements Serializable {
-	
 
-    private User user;
+    private int user;
 
-    private Movie movie;
+    private long movie;
 
-   
 }
